@@ -11,7 +11,8 @@ public class ChessBoard extends JFrame {
 
 	private JButton[][] squares = new JButton[8][8];
 
-	private static int clickCounter = 0;// only used for showing starting square
+	private static int clickCounter = 0;// to show knight in starting square
+	private static int squaresTouched = 0;
 
 	private int row = 0;;
 	private int col = 0;;
@@ -46,31 +47,57 @@ public class ChessBoard extends JFrame {
 		setVisible(true);
 	}
 
-	private void displayValidMoves(int i, int j) {
+	private boolean displayValidMoves(int i, int j) {
 
-		if (row - 2 >= 0 && col - 1 >= 0 && squares[row - 2][col - 1].getBackground() != Color.red)
+		int validMoveCount = 0;
+
+		if (row - 2 >= 0 && col - 1 >= 0 && squares[row - 2][col - 1].getBackground() != Color.red) {
 			squares[row - 2][col - 1].setBackground(Color.green);
+			validMoveCount++;
+		}
 
-		if (row - 1 >= 0 && col - 2 >= 0 && squares[row - 1][col - 2].getBackground() != Color.red)
+		if (row - 1 >= 0 && col - 2 >= 0 && squares[row - 1][col - 2].getBackground() != Color.red) {
 			squares[row - 1][col - 2].setBackground(Color.green);
+			validMoveCount++;
+		}
 
-		if (row + 1 <= 7 && col - 2 >= 0 && squares[row + 1][col - 2].getBackground() != Color.red)
+		if (row + 1 <= 7 && col - 2 >= 0 && squares[row + 1][col - 2].getBackground() != Color.red) {
 			squares[row + 1][col - 2].setBackground(Color.green);
+			validMoveCount++;
+		}
 
-		if (row + 2 <= 7 && col - 1 >= 0 && squares[row + 2][col - 1].getBackground() != Color.red)
+		if (row + 2 <= 7 && col - 1 >= 0 && squares[row + 2][col - 1].getBackground() != Color.red) {
 			squares[row + 2][col - 1].setBackground(Color.green);
+			validMoveCount++;
+		}
 
-		if (row - 1 >= 0 && col + 2 <= 7 && squares[row - 1][col + 2].getBackground() != Color.red)
+		if (row - 1 >= 0 && col + 2 <= 7 && squares[row - 1][col + 2].getBackground() != Color.red) {
 			squares[row - 1][col + 2].setBackground(Color.green);
+			validMoveCount++;
+		}
 
-		if (row - 2 >= 0 && col + 1 <= 7 && squares[row - 2][col + 1].getBackground() != Color.red)
+		if (row - 2 >= 0 && col + 1 <= 7 && squares[row - 2][col + 1].getBackground() != Color.red) {
 			squares[row - 2][col + 1].setBackground(Color.green);
+			validMoveCount++;
+		}
 
-		if (row + 2 <= 7 && col + 1 <= 7 && squares[row + 2][col + 1].getBackground() != Color.red)
+		if (row + 2 <= 7 && col + 1 <= 7 && squares[row + 2][col + 1].getBackground() != Color.red) {
 			squares[row + 2][col + 1].setBackground(Color.green);
+			validMoveCount++;
+		}
 
-		if (row + 1 <= 7 && col + 2 <= 7 && squares[row + 1][col + 2].getBackground() != Color.red)
+		if (row + 1 <= 7 && col + 2 <= 7 && squares[row + 1][col + 2].getBackground() != Color.red) {
 			squares[row + 1][col + 2].setBackground(Color.green);
+			validMoveCount++;
+		}
+		
+		if (validMoveCount > 0)
+			return true;
+		
+		JOptionPane.showMessageDialog(null, "You've run out of moves! The knight touched " + squaresTouched + " squares.", "Game Over",
+				JOptionPane.PLAIN_MESSAGE);
+		
+		return false;
 	}
 
 	private boolean isValidMove(int i, int j) {
@@ -80,6 +107,7 @@ public class ChessBoard extends JFrame {
 
 		if (((rowDelta == 1 && colDelta == 2) || (colDelta == 1 && rowDelta == 2))
 				&& squares[i][j].getBackground() != Color.red) {
+			squaresTouched++;
 			return true;
 		}
 
@@ -105,7 +133,7 @@ public class ChessBoard extends JFrame {
 				}
 			}
 		}
-		
+
 		displayValidMoves(i, j);
 	}
 
