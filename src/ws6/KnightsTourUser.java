@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.colorchooser.ColorSelectionModel;
 
-public class ChessBoard extends JFrame {
+public class KnightsTourUser extends JFrame {
 
 	private Container contents;
 
@@ -14,16 +14,39 @@ public class ChessBoard extends JFrame {
 	private static int clickCounter = 0;// to show knight in starting square
 	private static int squaresTouched = 0;
 
-	private int row = 0;;
-	private int col = 0;;
+	private int row = 0;
+	private int col = 0;
 
 	private ImageIcon knight = new ImageIcon("blackKnight.png");
 
-	public ChessBoard() {
+	public KnightsTourUser() {
 
 		super("Knight's Tour");
 		contents = getContentPane();
 		contents.setLayout(new GridLayout(8, 8));
+
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+
+		JMenu file = new JMenu("File");
+		menuBar.add(file);
+
+		JMenuItem restart = new JMenuItem("New User-directed Tour");
+		file.add(restart);
+		restart.addActionListener((new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+
+				dispose();
+
+				clickCounter = 0;
+				squaresTouched = 0;
+				row = 0;
+				col = 0;
+
+				new KnightsTourUser();
+			}
+		}));
 
 		ButtonHandler handler = new ButtonHandler();
 
@@ -44,10 +67,11 @@ public class ChessBoard extends JFrame {
 		setSize(600, 600);
 		setResizable(false);
 		setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 	}
 
-	private boolean displayValidMoves(int i, int j) {
+	private void displayValidMoves(int i, int j) {
 
 		int validMoveCount = 0;
 
@@ -90,14 +114,13 @@ public class ChessBoard extends JFrame {
 			squares[row + 1][col + 2].setBackground(Color.green);
 			validMoveCount++;
 		}
-		
+
 		if (validMoveCount > 0)
-			return true;
-		
-		JOptionPane.showMessageDialog(null, "You've run out of moves! The knight touched " + squaresTouched + " squares.", "Game Over",
+			return;
+
+		JOptionPane.showMessageDialog(null,
+				"You've run out of moves! The knight touched " + squaresTouched + " squares.", "Game Over",
 				JOptionPane.PLAIN_MESSAGE);
-		
-		return false;
 	}
 
 	private boolean isValidMove(int i, int j) {
@@ -161,7 +184,6 @@ public class ChessBoard extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		ChessBoard board = new ChessBoard();
-		board.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		new KnightsTourUser();
 	}
 }
