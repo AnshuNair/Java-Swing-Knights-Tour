@@ -3,9 +3,10 @@ package ws6;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.colorchooser.ColorSelectionModel;
 
 public class KnightsTourUser extends JFrame {
+
+	private static final long serialVersionUID = 1L;
 
 	private Container contents;
 
@@ -20,7 +21,7 @@ public class KnightsTourUser extends JFrame {
 	private int currentRow = 0;
 	private int currentColumn = 0;
 
-	private ImageIcon knight = new ImageIcon("blackKnight.png");
+	private ImageIcon knight;
 
 	public KnightsTourUser() {
 
@@ -41,17 +42,17 @@ public class KnightsTourUser extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 
 				dispose();
-
-				clickCounter = 0;
-				squaresTouched = 0;
-				currentRow = 0;
-				currentColumn = 0;
-
 				new KnightsTourUser();
 			}
 		}));
 
 		ButtonHandler handler = new ButtonHandler();
+		
+		clickCounter = 0;
+		squaresTouched = 0;
+		currentRow = 0;
+		currentColumn = 0;
+		knight = new ImageIcon("blackKnight.png");
 
 		// create the board
 		// upper left corner of board is (0,0)
@@ -90,6 +91,8 @@ public class KnightsTourUser extends JFrame {
 
 		if (validMoveCount > 0)
 			return;
+
+		squaresTouched++;
 
 		JOptionPane.showMessageDialog(null,
 				"You've run out of moves! The knight touched " + squaresTouched + " squares.", "Tour Over",
