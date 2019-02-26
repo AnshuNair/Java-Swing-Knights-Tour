@@ -14,8 +14,11 @@ public class KnightsTourUser extends JFrame {
 	private static int clickCounter = 0;// to show knight in starting square
 	private static int squaresTouched = 0;
 
-	private int row = 0;
-	private int col = 0;
+	private final static int[] horizontal = { 2, 1, -1, -2, -2, -1, 1, 2 };
+	private final static int[] vertical = { -1, -2, -2, -1, 1, 2, 2, 1 };
+
+	private int currentRow = 0;
+	private int currentColumn = 0;
 
 	private ImageIcon knight = new ImageIcon("blackKnight.png");
 
@@ -41,8 +44,8 @@ public class KnightsTourUser extends JFrame {
 
 				clickCounter = 0;
 				squaresTouched = 0;
-				row = 0;
-				col = 0;
+				currentRow = 0;
+				currentColumn = 0;
 
 				new KnightsTourUser();
 			}
@@ -75,44 +78,14 @@ public class KnightsTourUser extends JFrame {
 
 		int validMoveCount = 0;
 
-		if (row - 2 >= 0 && col - 1 >= 0 && squares[row - 2][col - 1].getBackground() != Color.red) {
-			squares[row - 2][col - 1].setBackground(Color.green);
-			validMoveCount++;
-		}
-
-		if (row - 1 >= 0 && col - 2 >= 0 && squares[row - 1][col - 2].getBackground() != Color.red) {
-			squares[row - 1][col - 2].setBackground(Color.green);
-			validMoveCount++;
-		}
-
-		if (row + 1 <= 7 && col - 2 >= 0 && squares[row + 1][col - 2].getBackground() != Color.red) {
-			squares[row + 1][col - 2].setBackground(Color.green);
-			validMoveCount++;
-		}
-
-		if (row + 2 <= 7 && col - 1 >= 0 && squares[row + 2][col - 1].getBackground() != Color.red) {
-			squares[row + 2][col - 1].setBackground(Color.green);
-			validMoveCount++;
-		}
-
-		if (row - 1 >= 0 && col + 2 <= 7 && squares[row - 1][col + 2].getBackground() != Color.red) {
-			squares[row - 1][col + 2].setBackground(Color.green);
-			validMoveCount++;
-		}
-
-		if (row - 2 >= 0 && col + 1 <= 7 && squares[row - 2][col + 1].getBackground() != Color.red) {
-			squares[row - 2][col + 1].setBackground(Color.green);
-			validMoveCount++;
-		}
-
-		if (row + 2 <= 7 && col + 1 <= 7 && squares[row + 2][col + 1].getBackground() != Color.red) {
-			squares[row + 2][col + 1].setBackground(Color.green);
-			validMoveCount++;
-		}
-
-		if (row + 1 <= 7 && col + 2 <= 7 && squares[row + 1][col + 2].getBackground() != Color.red) {
-			squares[row + 1][col + 2].setBackground(Color.green);
-			validMoveCount++;
+		for (int index = 0; index < 8; index++) {
+			if (currentRow + vertical[index] < 8 && currentRow + vertical[index] >= 0
+					&& currentColumn + horizontal[index] < 8 && currentColumn + horizontal[index] >= 0
+					&& squares[currentRow + vertical[index]][currentColumn + horizontal[index]]
+							.getBackground() != Color.red) {
+				validMoveCount++;
+				squares[currentRow + vertical[index]][currentColumn + horizontal[index]].setBackground(Color.green);
+			}
 		}
 
 		if (validMoveCount > 0)
@@ -125,8 +98,8 @@ public class KnightsTourUser extends JFrame {
 
 	private boolean isValidMove(int i, int j) {
 
-		int rowDelta = Math.abs(i - row);
-		int colDelta = Math.abs(j - col);
+		int rowDelta = Math.abs(i - currentRow);
+		int colDelta = Math.abs(j - currentColumn);
 
 		if (((rowDelta == 1 && colDelta == 2) || (colDelta == 1 && rowDelta == 2))
 				&& squares[i][j].getBackground() != Color.red) {
@@ -140,11 +113,11 @@ public class KnightsTourUser extends JFrame {
 	private void processClick(int i, int j) {
 		if (isValidMove(i, j) == false)
 			return;
-		squares[row][col].setIcon(null);
+		squares[currentRow][currentColumn].setIcon(null);
 		squares[i][j].setIcon(knight);
-		row = i;
-		col = j;
-		squares[row][col].setBackground(Color.red);
+		currentRow = i;
+		currentColumn = j;
+		squares[currentRow][currentColumn].setBackground(Color.red);
 
 		for (int k = 0; k < 8; k++) {
 			for (int l = 0; l < 8; l++) {
@@ -168,10 +141,10 @@ public class KnightsTourUser extends JFrame {
 				for (int j = 0; j < 8; j++) {
 					if (source == squares[i][j]) {
 						if (clickCounter == 0) {
-							row = i;
-							col = j;
-							squares[row][col].setIcon(knight);
-							squares[row][col].setBackground(Color.red);
+							currentRow = i;
+							currentColumn = j;
+							squares[currentRow][currentColumn].setIcon(knight);
+							squares[currentRow][currentColumn].setBackground(Color.red);
 							clickCounter++;
 						}
 						displayValidMoves(i, j);
