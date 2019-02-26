@@ -6,7 +6,7 @@ import java.util.Random;
 import javax.swing.*;
 
 public class KnightsTourHeuristic extends JFrame {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private Container contents;
@@ -21,6 +21,9 @@ public class KnightsTourHeuristic extends JFrame {
 
 	private final static int[] horizontal = { 2, 1, -1, -2, -2, -1, 1, 2 };
 	private final static int[] vertical = { -1, -2, -2, -1, 1, 2, 2, 1 };
+
+	private static int startingRow;
+	private static int startingColumn;
 
 	private static int currentRow = new Random().nextInt(8);
 	private static int currentColumn = new Random().nextInt(8);
@@ -53,6 +56,9 @@ public class KnightsTourHeuristic extends JFrame {
 			}
 		}
 
+		startingRow = currentRow;
+		startingColumn = currentColumn;
+
 		squares[currentRow][currentColumn].setIcon(knight);
 		squares[currentRow][currentColumn].setBackground(Color.red);
 
@@ -61,7 +67,7 @@ public class KnightsTourHeuristic extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
-		
+
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException e) {
@@ -117,19 +123,21 @@ public class KnightsTourHeuristic extends JFrame {
 			}
 		}
 
-		if (validMoveCount > 0)
-			return true;
+		if (validMoveCount <= 0) {
+			hasMoves = false;
+			squares[startingRow][startingColumn].setBackground(Color.blue);
+			squaresTouched++;
+			JOptionPane.showMessageDialog(null, "The knight touched " + squaresTouched + " squares. Starting position: "
+					+ startingRow + "," + startingColumn, "Tour Over", JOptionPane.PLAIN_MESSAGE);
 
-		JOptionPane.showMessageDialog(null, "The knight touched " + squaresTouched + " squares.", "Tour Over",
-				JOptionPane.PLAIN_MESSAGE);
-
-		return false;
-
+		}
+		return hasMoves;
 	}
 
 	private static void moveKnight(int i, int j) {
+		if (!processValidMoves(i, j))
+			return;
 		squares[i][j].setIcon(null);
-		processValidMoves(i, j);
 		currentRow += vertical[position];
 		currentColumn += horizontal[position];
 		squares[currentRow][currentColumn].setIcon(knight);
