@@ -1,7 +1,6 @@
 package ws6;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.Random;
 import javax.swing.*;
 
@@ -12,8 +11,7 @@ public class KnightsTourHeuristic extends JFrame {
 	private Container contents;
 
 	private static JButton[][] squares = new JButton[8][8];
-
-	private static int clickCounter = 0;// to show knight in starting square
+	
 	private static int squaresTouched = 0;
 	private static int min = 0;
 	private static int position = 0;
@@ -40,8 +38,6 @@ public class KnightsTourHeuristic extends JFrame {
 		contents = getContentPane();
 		contents.setLayout(new GridLayout(8, 8));
 
-		ButtonHandler handler = new ButtonHandler();
-
 		// create the board
 		// upper left corner of board is (0,0)
 		for (int i = 0; i < 8; i++) {
@@ -52,7 +48,6 @@ public class KnightsTourHeuristic extends JFrame {
 				if ((i + j) % 2 == 0)
 					squares[i][j].setBackground(Color.white);
 				contents.add(squares[i][j]);
-				squares[i][j].addActionListener(handler);
 			}
 		}
 
@@ -80,28 +75,6 @@ public class KnightsTourHeuristic extends JFrame {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			}
-		}
-	}
-
-	private class ButtonHandler implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			if (clickCounter == 0) {
-				Object source = e.getSource();
-				for (int i = 0; i < 8; i++) {
-					for (int j = 0; j < 8; j++) {
-						if (source == squares[i][j]) {
-							currentRow = i;
-							currentColumn = j;
-							squares[currentRow][currentColumn].setIcon(knight);
-							squares[currentRow][currentColumn].setBackground(Color.red);
-							clickCounter++;
-							return;
-
-						}
-					}
-				}
 			}
 		}
 	}
