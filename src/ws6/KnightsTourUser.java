@@ -92,7 +92,7 @@ public class KnightsTourUser extends JFrame {
 			return;
 
 		JOptionPane.showMessageDialog(null,
-				"You've run out of moves! The knight touched " + squaresTouched + " squares.", "Game Over",
+				"You've run out of moves! The knight touched " + squaresTouched + " squares.", "Tour Over",
 				JOptionPane.PLAIN_MESSAGE);
 	}
 

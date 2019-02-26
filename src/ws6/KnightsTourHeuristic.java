@@ -2,10 +2,12 @@ package ws6;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Random;
 import javax.swing.*;
-import javax.swing.colorchooser.ColorSelectionModel;
 
 public class KnightsTourHeuristic extends JFrame {
+	
+	private static final long serialVersionUID = 1L;
 
 	private Container contents;
 
@@ -20,8 +22,8 @@ public class KnightsTourHeuristic extends JFrame {
 	private final static int[] horizontal = { 2, 1, -1, -2, -2, -1, 1, 2 };
 	private final static int[] vertical = { -1, -2, -2, -1, 1, 2, 2, 1 };
 
-	private static int currentRow = 0;
-	private static int currentColumn = 0;
+	private static int currentRow = new Random().nextInt(8);
+	private static int currentColumn = new Random().nextInt(8);
 
 	private static ImageIcon knight = new ImageIcon("blackKnight.png");
 
@@ -35,28 +37,7 @@ public class KnightsTourHeuristic extends JFrame {
 		contents = getContentPane();
 		contents.setLayout(new GridLayout(8, 8));
 
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-
-		JMenu file = new JMenu("File");
-		menuBar.add(file);
-
-		JMenuItem restart = new JMenuItem("New User-directed Tour");
-		file.add(restart);
-		restart.addActionListener((new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-
-				dispose();
-
-				clickCounter = 0;
-				squaresTouched = 0;
-				currentRow = 0;
-				currentColumn = 0;
-
-				new KnightsTourHeuristic();
-			}
-		}));
+		ButtonHandler handler = new ButtonHandler();
 
 		// create the board
 		// upper left corner of board is (0,0)
@@ -68,6 +49,7 @@ public class KnightsTourHeuristic extends JFrame {
 				if ((i + j) % 2 == 0)
 					squares[i][j].setBackground(Color.white);
 				contents.add(squares[i][j]);
+				squares[i][j].addActionListener(handler);
 			}
 		}
 
@@ -79,6 +61,12 @@ public class KnightsTourHeuristic extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
+		
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		while (hasMoves) {
 			moveKnight(currentRow, currentColumn);
@@ -90,8 +78,29 @@ public class KnightsTourHeuristic extends JFrame {
 		}
 	}
 
-	private static boolean processValidMoves(int i, int j) {
+	private class ButtonHandler implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if (clickCounter == 0) {
+				Object source = e.getSource();
+				for (int i = 0; i < 8; i++) {
+					for (int j = 0; j < 8; j++) {
+						if (source == squares[i][j]) {
+							currentRow = i;
+							currentColumn = j;
+							squares[currentRow][currentColumn].setIcon(knight);
+							squares[currentRow][currentColumn].setBackground(Color.red);
+							clickCounter++;
+							return;
 
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private static boolean processValidMoves(int i, int j) {
 		min = 8;
 		int validMoveCount = 0;
 
@@ -104,7 +113,6 @@ public class KnightsTourHeuristic extends JFrame {
 				if (accessibility[i + vertical[index]][j + horizontal[index]] <= min) {
 					min = accessibility[i + vertical[index]][j + horizontal[index]];
 					position = index;
-					System.out.println("Min: " + min + " position: " + position);
 				}
 			}
 		}
@@ -112,7 +120,7 @@ public class KnightsTourHeuristic extends JFrame {
 		if (validMoveCount > 0)
 			return true;
 
-		JOptionPane.showMessageDialog(null, "The knight touched " + squaresTouched + " squares.", "Game Over",
+		JOptionPane.showMessageDialog(null, "The knight touched " + squaresTouched + " squares.", "Tour Over",
 				JOptionPane.PLAIN_MESSAGE);
 
 		return false;
@@ -124,9 +132,9 @@ public class KnightsTourHeuristic extends JFrame {
 		processValidMoves(i, j);
 		currentRow += vertical[position];
 		currentColumn += horizontal[position];
-		System.out.println("Current Row: " + currentRow + " Current Column: " + currentColumn);
 		squares[currentRow][currentColumn].setIcon(knight);
 		squares[currentRow][currentColumn].setBackground(Color.red);
+		squaresTouched++;
 	}
 
 	public static void main(String[] args) {
